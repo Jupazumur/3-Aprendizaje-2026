@@ -1,5 +1,5 @@
 """
-    Funciones y clases para entrtenamiento y predicción con árboles de desición numéricos utilizando el criterio de entropía
+    Funciones y clases para entrenamiento y predicción con árboles de decisión numéricos utilizando el criterio de entropía
     
     Se asume que los datos vienen en forma de una lista de diccionarios, donde cada diccionario representa una instancia (la cual puede tener nombres de atributos diferentes)
     
@@ -7,18 +7,19 @@
       
 """
 
-__author__ = "Julio Waissman"
-__date__ = "enero 2025"
+__author__ = "Julio Waissman, Juan Pablo Zurita"
+__date__ = "febrero 2025"
 
 
 import math
 from collections import Counter
+import random
 
 def entrena_arbol(datos, target, clase_default, 
                   max_profundidad=None, acc_nodo=1.0, min_ejemplos=0,
                   variables_seleccionadas=None):
     """
-    Entrena un árbol de desición utilizando el criterio de entropía
+    Entrena un árbol de decisión utilizando el criterio de entropía
     
     Parámetros: 
     -----------
@@ -37,19 +38,19 @@ def entrena_arbol(datos, target, clase_default,
     min_ejemplos: int
         El número mínimo de ejemplos para considerar un nodo como hoja
     variables_seleccionadas: list(str)
-        Lista de variables a considerar. Si es None, se consideran todas las variables, esto apica para árboles aleagtorios y lo tendrán que implementar en la tarea.
+        Lista de variables a considerar. Si es None, se consideran todas las variables, esto apica para árboles aleatorios y lo tendrán que implementar en la tarea.
         
     Regresa:
     --------
     nodo: Nodo
-        El nodo raíz del árbol de desición
+        El nodo raíz del árbol de decisión
     
     """
     atributos = list(datos[0].keys())
     atributos.remove(target)
         
-    # Criterios para deterinar si es un nodo hoja
-    if  len(datos) == 0 or len(atributos) == 0:
+    # Criterios para determinar si es un nodo hoja
+    if len(datos) == 0 or len(atributos) == 0:
         return NodoN(terminal=True, clase_default=clase_default)
     
     clases = Counter(d[target] for d in datos)
@@ -61,8 +62,13 @@ def entrena_arbol(datos, target, clase_default,
         
         return NodoN(terminal=True, clase_default=clase_default)
     
+    if variables_seleccionadas != None and isinstance(variables_seleccionadas, int):
+        lista_surtida = random.sample(atributos, variables_seleccionadas)
+    else:
+        lista_surtida = atributos
+
     variable, valor = selecciona_variable_valor(
-        datos, target, atributos
+        datos, target, lista_surtida
     )
     nodo = NodoN(
         terminal=False, 
