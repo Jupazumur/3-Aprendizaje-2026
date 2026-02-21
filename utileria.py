@@ -59,5 +59,5 @@ def lee_csv(archivo, atributos=None, separador=','):
         columnas = atributos
     datos = []
     for l in lineas[1:]:
-        datos.append({c: v for c, v in zip(columnas, l.strip().split(','))})
+        datos.append({c: v for c, v in zip(columnas, l.strip().split(separador))})
     return datos

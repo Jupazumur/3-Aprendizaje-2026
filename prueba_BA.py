@@ -6,11 +6,10 @@ import os
 import random
 
 # Descarga y descomprime los datos
-
-url = "https://archive.ics.uci.edu/static/public/17/breast+cancer+wisconsin+diagnostic.zip"
-archivo = "datos/cancer.zip"
-archivo_datos = "datos/wdbc.data"
-atributos = ['ID', 'Diagnosis'] + [f'feature_{i}' for i in range(1, 31)]
+url = "https://archive.ics.uci.edu/static/public/697/predict+students+dropout+and+academic+success.zip"
+archivo = "datos/dropout.zip"
+archivo_datos = "datos/data.csv"
+atributos = [f'feature_{i}' for i in range(1, 37)] + ['Target']
 
 # Descarga datos
 if not os.path.exists("datos"):
@@ -23,21 +22,24 @@ if not os.path.exists(archivo):
 datos = ut.lee_csv(
     archivo_datos,
     atributos=atributos,
-    separador=","
+    separador=";"
 )
+
 for d in datos:
-    d['Diagnosis'] = 1 if d['Diagnosis'] == 'M' else 0
-    for i in range(1, 31):
+    for i in range(1, 37):
         d[f'feature_{i}'] = float(d[f'feature_{i}'])
-    del(d['ID'])
 
 # Selecciona los artributos
-target = 'Diagnosis'
-atributos = [target] + [f'feature_{i}' for i in range(1, 31)]
+target = 'Target'
+atributos = [target] + [f'feature_{i}' for i in range(1, 37)]
 
 # Selecciona un conjunto de entrenamiento y de validación
 random.seed(42)
 random.shuffle(datos)
+
+# Truncamiento para pruebas más rápidas
+datos = datos[:600]
+
 N = int(0.8*len(datos))
 datos_entrenamiento = datos[:N]
 datos_validacion = datos[N:]
