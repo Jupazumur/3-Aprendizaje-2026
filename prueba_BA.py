@@ -5,6 +5,7 @@ from collections import Counter
 import os
 from random import seed, shuffle
 from time import perf_counter
+from concurrent.futures import ProcessPoolExecutor
 
 def main():
 
@@ -44,7 +45,7 @@ def main():
     shuffle(datos)
 
     # Truncamiento para pruebas más rápidas
-    datos = datos[:100]
+    datos = datos[:1000]
 
     # Split de datos de entrenamiento y validación
     N = int(0.8*len(datos))
@@ -56,14 +57,27 @@ def main():
     clase_default = clases.most_common(1)[0][0]
     vars_optimas = int(sqrt(len(atributos)-1))
 
-    errores_d = [test_profundidad(datos_entrenamiento, datos_validacion, target, clase_default, profundidad, vars_optimas)
-                 for profundidad in [1, 3, 5, 10, 15, 20, 30]]
-    
-    errores_M = [test_M(datos_entrenamiento, datos_validacion, target, clase_default, num_arboles, vars_optimas)
-                 for num_arboles in [1, 5, 10, 20, 30, 40, 50]]
-    
-    errores_var = [test_vs(datos_entrenamiento, datos_validacion, target, clase_default, num_vars)
-                 for num_vars in [2, 4, 8, 12, 16, 20, 24]]
+    # Pruebas en paralelo
+    with ProcessPoolExecutor() as executor:
+
+        futuros_d = [
+            executor.submit(test_profundidad, datos_entrenamiento, datos_validacion, target, clase_default, profundidad, vars_optimas)
+            for profundidad in [1, 3, 5, 10, 15, 20, 30]
+        ]
+        
+        futuros_M = [
+            executor.submit(test_M, datos_entrenamiento, datos_validacion, target, clase_default, num_arboles, vars_optimas)
+            for num_arboles in [1, 5, 10, 20, 30, 40, 50]
+        ]
+        
+        futuros_var = [
+            executor.submit(test_vs, datos_entrenamiento, datos_validacion, target, clase_default, num_vars)
+            for num_vars in [2, 4, 8, 12, 16, 20, 24]
+        ]
+
+        errores_d = [futuro.result() for futuro in futuros_d]
+        errores_M = [futuro.result() for futuro in futuros_M]
+        errores_var = [futuro.result() for futuro in futuros_var]
 
     print("Errores para diferentes profundidades\n")
     imprimir_error(errores_d, 'd')
@@ -158,3 +172,5 @@ def test_vs(datos_e, datos_v, target, clase_default, vs):
 
 if __name__ == '__main__':
     main()
+
+# Conclusión en README
