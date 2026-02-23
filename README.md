@@ -62,3 +62,12 @@ para esto hay que hacer lo siguiente:
    profundidad de los árboles, o la cantidad de variables a considerar en cada nodo.
 
 Este proyecto solo se puede evaluar a partir de `prueba_BA.py`, por lo que es necesario desarrollar los 3 incisos y se evaluará en relación a la funcionalidad del algoritmo, y del estudio realizado en `prueba_BA.py`.
+
+## Conclusión
+A partir de los archivos de texto resultados. El número que le sigue a sus títulos es el número de datos usados en las pruebas.
+
+- Al aumentar la profundidad se puede observar como se reduce rapidamente el $E_\textrm{in}$ , pero se estanca o empeora el $E_\textrm{out}$ . Esto es porque se memorizan los datos pero no generalizan mejor.
+
+- Lo que pasa al aumentar la cantidad de árboles es simplemente que se llega a un punto de rendimientos decrecientes (el poder computacional utilizado para $M$ s mayores ya no mejora el error).
+
+- Cuando se aumentan las variables seleccionadas el $E_\textrm{in}$ se mantiene muy bajo para todas las cantidades de datos. Para el $E_\textrm{out}$ , fluctúa mucho en cantidades menores de datos pero se mantiene estable en cantidades mayores (800-1000).
